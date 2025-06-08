@@ -5,6 +5,7 @@
 
 connectionstrings.json
 # dotenv files
+connectionstrings.json
 .env
 
 # User-specific files
