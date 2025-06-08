@@ -1,0 +1,12 @@
+/Users/nolanmiller/Projects/QuidditchTrip/QuidditchTrip.Models/bin/Debug/net9.0/QuidditchTrip.Models.deps.json
+/Users/nolanmiller/Projects/QuidditchTrip/QuidditchTrip.Models/bin/Debug/net9.0/QuidditchTrip.Models.dll
+/Users/nolanmiller/Projects/QuidditchTrip/QuidditchTrip.Models/bin/Debug/net9.0/QuidditchTrip.Models.pdb
+/Users/nolanmiller/Projects/QuidditchTrip/QuidditchTrip.Models/obj/Debug/net9.0/QuidditchTrip.Models.GeneratedMSBuildEditorConfig.editorconfig
+/Users/nolanmiller/Projects/QuidditchTrip/QuidditchTrip.Models/obj/Debug/net9.0/QuidditchTrip.Models.AssemblyInfoInputs.cache
+/Users/nolanmiller/Projects/QuidditchTrip/QuidditchTrip.Models/obj/Debug/net9.0/QuidditchTrip.Models.AssemblyInfo.cs
+/Users/nolanmiller/Projects/QuidditchTrip/QuidditchTrip.Models/obj/Debug/net9.0/QuidditchTrip.Models.csproj.CoreCompileInputs.cache
+/Users/nolanmiller/Projects/QuidditchTrip/QuidditchTrip.Models/obj/Debug/net9.0/QuidditchTrip.Models.sourcelink.json
+/Users/nolanmiller/Projects/QuidditchTrip/QuidditchTrip.Models/obj/Debug/net9.0/QuidditchTrip.Models.dll
+/Users/nolanmiller/Projects/QuidditchTrip/QuidditchTrip.Models/obj/Debug/net9.0/refint/QuidditchTrip.Models.dll
+/Users/nolanmiller/Projects/QuidditchTrip/QuidditchTrip.Models/obj/Debug/net9.0/QuidditchTrip.Models.pdb
+/Users/nolanmiller/Projects/QuidditchTrip/QuidditchTrip.Models/obj/Debug/net9.0/ref/QuidditchTrip.Models.dll
