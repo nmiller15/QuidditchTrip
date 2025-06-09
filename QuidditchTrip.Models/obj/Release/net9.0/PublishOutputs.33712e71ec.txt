@@ -1,0 +1,3 @@
+/Users/nolanmiller/Projects/QuidditchTrip/QuidditchTrip.Models/bin/Release/net9.0/publish/QuidditchTrip.Models.dll
+/Users/nolanmiller/Projects/QuidditchTrip/QuidditchTrip.Models/bin/Release/net9.0/publish/QuidditchTrip.Models.deps.json
+/Users/nolanmiller/Projects/QuidditchTrip/QuidditchTrip.Models/bin/Release/net9.0/publish/QuidditchTrip.Models.pdb

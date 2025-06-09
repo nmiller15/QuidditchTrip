@@ -1,0 +1,95 @@
+name: Deploy QuidditchTrip.API
+
+on:
+  push:
+    - branches: [main]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment: production
+
+    steps:
+      - name: Check trigger source
+        run: echo "Triggered by ${{ github.event_name }} on branch ${{ github.ref_name }}"
+
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: 9.0.x
+
+      - name: Install EF Core tools
+        run: |
+          dotnet tool install --global dotnet-ef || true
+          echo "$HOME/.dotnet/tools" >> $GITHUB_PATH
+        
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.EC2_SSH }}
+
+      - name: Test SSH connection
+        run: |
+          ssh -o StrictHostChecking=no ubuntu@${{ secrets.EC2_PUBLIC_IP }} "echo Hello World"
+
+      - name: Build QuidditchTrip.API
+        run: |
+          dotnet build
+
+      - name: Publish QuidditchTrip.API
+        run: |
+          dotnet publish QuidditchTrip.API -c Release -r linux-x64 --self-contained true -o ./publish 
+
+      - name: Generate Postgres Migration Script
+        run: |
+          dotnet ef migrations script --idempotent -o migration.sql
+
+      - name: Copy migration script to remote server
+        run: |
+          scp -o StrictHostKeyChecking=no migration.sql ubuntu@${{ secrets.EC2_PUBLIC_IP }}:/tmp/migration.sql
+
+      - name: Run migration script on remote server
+        env:
+          PGUSER: postgres
+          PGPASSWORD: ${{ secrets.PG_PASSWORD }}
+          PGDATABASE: quidditch
+          PGHOST: localhost
+          PGPORT: 5432
+        run: |
+          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
+            export PGPASSWORD=$PGPASSWORD
+            psql -U $PGUSER -d $PGDATABASE -f /tmp/migration.sql
+            rm /tmp/migration.sql
+          EOF
+
+      - name: Deploy to EC2
+        run: |
+          rsync -avz --delete --exclude="connectionstrings.json" ./publish/ ubuntu@${{ secrets.EC2_PUBLIC_IP }}:/srv/QuidditchTrip.API/
+
+      - name: Restart API
+        run: |
+          ssh ubuntu@${{ secrets.EC2_PUBLIC_IP }} "sudo systemctl restart QuidditchTrip.API.service"
+
+      - name: Restart Caddy
+        run: |
+          ssh ubuntu@${{ secrets.EC2_PUBLIC_IP }} "sudo systemctl restart caddy"
+
+      - name: Check if API is Live
+        run: |
+          for i in {1..5}; do
+            RESPONSE=$(curl --silent --fail https://api-quidditch.nolanmiller.me/)
+            if [[ "$RESPONSE" == "Hello World" ]]; then
+              echo "API is live."
+              exit 0
+            fi
+            echo "Retry $i: API not live yet. Waiting..."
+            sleep 3
+          done
+
+          echo "API did not return expected response after retries. Got: $RESPONSE"
+          exit 1
+
