@@ -47,7 +47,7 @@ jobs:
 
       - name: Generate Postgres Migration Script
         run: |
-          dotnet ef migrations script --idempotent -o migration.sql
+          dotnet ef migrations script --project QuidditchTrip.API --idempotent -o migration.sql
 
       - name: Copy migration script to remote server
         run: |
