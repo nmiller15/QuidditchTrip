@@ -11,13 +11,7 @@ public class Program
     {
         var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production";
 
-        // Decide the path based on environment
-        var connectionStringsPath = environment switch
-        {
-            "Development" => "connectionstrings.json",
-            "Production" => "/srv/connectionstrings.json",
-            _ => "/srv/connectionstrings.json"
-        }; var config = new ConfigurationBuilder()
+        var config = new ConfigurationBuilder()
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddJsonFile("connectionstrings.json", optional: false, reloadOnChange: true)
                 .Build();
