@@ -9,10 +9,18 @@ public class Program
 {
     public static void Main(string[] args)
     {
-        var config = new ConfigurationBuilder()
-            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
-            .AddJsonFile("connectionstrings.json", optional: false, reloadOnChange: true)
-            .Build();
+        var environment = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Production";
+
+        // Decide the path based on environment
+        var connectionStringsPath = environment switch
+        {
+            "Development" => "connectionstrings.json",
+            "Production" => "/srv/connectionstrings.json",
+            _ => "/srv/connectionstrings.json"
+        }; var config = new ConfigurationBuilder()
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddJsonFile("connectionstrings.json", optional: false, reloadOnChange: true)
+                .Build();
 
         var builder = WebApplication.CreateBuilder(args);
         builder.Configuration.AddConfiguration(config);
