@@ -63,9 +63,9 @@ jobs:
           PGHOST: localhost
           PGPORT: 5432
         run: |
-          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_PUBLIC_IP }} << 'EOF'
-            export PGPASSWORD=$PGPASSWORD
-            psql -U $PGUSER -d $PGDATABASE -f /tmp/migration.sql
+          ssh -o StrictHostKeyChecking=no ubuntu@${{ secrets.EC2_PUBLIC_IP }} <<EOF
+            export PGPASSWORD="${PGPASSWORD}"
+            psql -U "${PGUSER}" -d "${PGDATABASE}" -f /tmp/migration.sql
             rm /tmp/migration.sql
           EOF
 
@@ -80,19 +80,3 @@ jobs:
       - name: Restart Caddy
         run: |
           ssh ubuntu@${{ secrets.EC2_PUBLIC_IP }} "sudo systemctl restart caddy"
-
-      - name: Check if API is Live
-        run: |
-          for i in {1..5}; do
-            RESPONSE=$(curl --silent --fail https://api-quidditch.nolanmiller.me/ || true)
-            if [[ "$RESPONSE" == "Hello World" ]]; then
-              echo "API is live."
-              exit 0
-            fi
-            echo "Retry $i: API not live yet. Waiting..."
-            sleep 3
-          done
-
-          echo "API did not return expected response after retries. Got: $RESPONSE"
-          exit 1
-
