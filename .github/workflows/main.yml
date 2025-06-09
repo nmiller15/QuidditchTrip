@@ -84,7 +84,7 @@ jobs:
       - name: Check if API is Live
         run: |
           for i in {1..5}; do
-            RESPONSE=$(curl --silent --fail https://api-quidditch.nolanmiller.me/)
+            RESPONSE=$(curl --silent --fail https://api-quidditch.nolanmiller.me/ || true)
             if [[ "$RESPONSE" == "Hello World" ]]; then
               echo "API is live."
               exit 0
