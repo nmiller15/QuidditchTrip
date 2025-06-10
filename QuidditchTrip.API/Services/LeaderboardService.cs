@@ -18,6 +18,8 @@ public class LeaderboardService : ILeaderboardService
     {
         var teams = await _context.Teams
             .OrderByDescending(t => t.Score)
+            .Include(t => t.Game)
+            .Where(t => t.GameKey != null)
             .Take(count)
             .ToListAsync();
         if (teams == null) return ServiceResponse<List<LeaderboardEntry>>.Failure("Unable to retrieve leaderboard.");
