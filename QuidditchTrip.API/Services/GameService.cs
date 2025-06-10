@@ -138,6 +138,7 @@ public class GameService : IGameService
     public async Task<ServiceResponse<Game>> EndGame(int gameKey)
     {
         var game = await _context.Games
+            .Include(g => g.Teams)
             .SingleAsync(g => g.GameKey == gameKey);
         if (game == null) { return ServiceResponse<Game>.Failure("No game found with the provided key."); }
 
@@ -152,9 +153,7 @@ public class GameService : IGameService
             team.IsActive = false;
             _context.Teams.Update(team);
         }
-
-        var changedTeams = await _context.SaveChangesAsync();
-        if (changedRows < 2) { return ServiceResponse<Game>.Failure("Failed to update teams after finishing game."); }
+        await _context.SaveChangesAsync();
 
         return ServiceResponse<Game>.Success(game);
     }
