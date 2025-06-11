@@ -34,6 +34,7 @@ jobs:
       # Install dependencies
       - name: Install dependencies
         run: |
+          ls
           cd ./Quidditch.Client
           npm install
 
