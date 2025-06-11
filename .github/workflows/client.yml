@@ -34,12 +34,12 @@ jobs:
       # Install dependencies
       - name: Install dependencies
         run: |
-          cd Quidditch.Client
+          cd QuidditchTrip.Client
           npm install
 
       - name: Build the project
         run: |
-          cd Quidditch.Client
+          cd QuidditchTrip.Client
           npm run build
 
       - name: Set up SSH
@@ -53,7 +53,7 @@ jobs:
 
       - name: Deploy to EC2
         run: |
-          rsync -avz  -o StrictHostKeyChecking=no" Quidditch.Client/dist/ ubuntu@${{ secrets.EC2_PUBLIC_IP }}:/srv/Quidditch.Client
+          rsync -avz  -o StrictHostKeyChecking=no" QuidditchTrip.Client/dist/ ubuntu@${{ secrets.EC2_PUBLIC_IP }}:/srv/Quidditch.Client
 
       - name: Restart Caddy
         run: |
