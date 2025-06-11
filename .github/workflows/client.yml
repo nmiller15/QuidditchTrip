@@ -34,13 +34,12 @@ jobs:
       # Install dependencies
       - name: Install dependencies
         run: |
-          ls
-          cd ./Quidditch.Client
+          cd Quidditch.Client
           npm install
 
       - name: Build the project
         run: |
-          cd ./Quidditch.Client
+          cd Quidditch.Client
           npm run build
 
       - name: Set up SSH
