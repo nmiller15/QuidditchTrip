@@ -20,7 +20,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "lts"
+          node-version: "latest"
 
       # Cache node modules for faster builds
       - name: Cache node modules
