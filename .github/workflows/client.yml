@@ -53,7 +53,7 @@ jobs:
 
       - name: Deploy to EC2
         run: |
-          rsync -avz  -o StrictHostKeyChecking=no" ./Quidditch.Client/dist/ ubuntu@${{ secrets.EC2_PUBLIC_IP }}:/srv/Quidditch.Client
+          rsync -avz  -o StrictHostKeyChecking=no" Quidditch.Client/dist/ ubuntu@${{ secrets.EC2_PUBLIC_IP }}:/srv/Quidditch.Client
 
       - name: Restart Caddy
         run: |
