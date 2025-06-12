@@ -37,22 +37,47 @@ import '../styles/global.css'
 		const team2 = document.getElementById('team-2').value.trim()
 
 		if (team1 && team2) {
-			localStorage.setItem('team1', team1)
-			localStorage.setItem('team2', team2)
-
-			var response = await fetch(`${baseUrl}/teams/create/${team1}/`, {
+			var teamOneResponse = await fetch(`${baseUrl}/teams/create/${team1}/`, {
 				method: 'POST'
 			})
-			if (response.ok) {
-				var data = await response.json()
-				console.log('Game started:', data)
-				localStorage.setItem('gameId', data.gameId)
-				window.location.href = `/game/${data.gameId}`
+			if (teamOneResponse.ok) {
+				var data = await teamOneResponse.json()
+				localStorage.setItem('team1', JSON.stringify(data.data))
+				// window.location.href = `/game/${data.gameId}`
+			} else {
+				alert('Error starting game. Please try again.')
+			}
+
+			var teamTwoResponse = await fetch(`${baseUrl}/teams/create/${team2}/`, {
+				method: 'POST'
+			})
+			if (teamOneResponse.ok) {
+				var data = await teamTwoResponse.json()
+				localStorage.setItem('team2', JSON.stringify(data.data))
+				// window.location.href = `/game/${data.gameId}`
 			} else {
 				alert('Error starting game. Please try again.')
 			}
 		} else {
 			alert('Please enter valid team names.')
+		}
+
+		var savedTeam1 = JSON.parse(localStorage.getItem('team1'))
+		var savedTeam2 = JSON.parse(localStorage.getItem('team2'))
+		if (savedTeam1 && savedTeam2) {
+			var gameResponse = await fetch(
+				`${baseUrl}/games/teams/${savedTeam1.teamKey}/${savedTeam2.teamKey}/`,
+				{
+					method: 'POST'
+				}
+			)
+			if (gameResponse.ok) {
+				var gameData = await gameResponse.json()
+				localStorage.setItem('game', JSON.stringify(gameData.data))
+				window.location.href = `/game/${gameData.data.gameKey}`
+			} else {
+				alert('Error creating game. Please try again.')
+			}
 		}
 	})
 </script>
