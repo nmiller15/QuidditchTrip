@@ -32,6 +32,17 @@ public class Program
         builder.Services.AddScoped<ITeamService, TeamService>();
         builder.Services.AddScoped<ILeaderboardService, LeaderboardService>();
 
+
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowLocalhostDev", policy =>
+            {
+                policy.WithOrigins("http://localhost:4321")
+                      .AllowAnyHeader()
+                      .AllowAnyMethod();
+            });
+        });
+
         var app = builder.Build();
 
         // Configure the HTTP request pipeline.

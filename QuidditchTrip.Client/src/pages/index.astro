@@ -1,7 +1,13 @@
 ---
 import Layout from '../layouts/Layout.astro'
+import '../styles/global.css'
 ---
 
 <Layout>
-	<h1>QuidditchTrip</h1>
+	<div class="mx-auto mt-32">
+		<h1 class="text-center text-2xl">QuidditchTrip</h1>
+		<button class="mx-auto mt-4 block rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600">
+			<a href="/teams">Start a game</a>
+		</button>
+	</div>
 </Layout>
