@@ -51,6 +51,7 @@ public class Program
             app.MapOpenApi();
         }
 
+        app.UseCors("AllowLocalhostDev");
         app.UseHttpsRedirection();
         app.RegisterEndpoints();
         app.Run();

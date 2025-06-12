@@ -40,7 +40,7 @@ import '../styles/global.css'
 			localStorage.setItem('team1', team1)
 			localStorage.setItem('team2', team2)
 
-			var response = await fetch(`${baseUrl}/teams/${team1}/${team2}`, {
+			var response = await fetch(`${baseUrl}/teams/create/${team1}/`, {
 				method: 'POST'
 			})
 			if (response.ok) {
