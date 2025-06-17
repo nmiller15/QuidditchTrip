@@ -37,7 +37,7 @@ public class Program
         {
             options.AddPolicy("AllowLocalhostDev", policy =>
             {
-                policy.WithOrigins("http://localhost:4321")
+                policy.WithOrigins("http://localhost:4321", "https://quidditchtrip.nolanmiller.me")
                       .AllowAnyHeader()
                       .AllowAnyMethod();
             });
