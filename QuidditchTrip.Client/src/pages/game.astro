@@ -1,0 +1,111 @@
+---
+import { get, post } from '../scripts/request.js'
+import Clock from '../components/Clock.astro'
+import '../styles/global.css'
+import Layout from '../layouts/Layout.astro'
+const gameKey = Astro.url.searchParams.get('gameKey')
+
+const gameResponse = await get('/games', [gameKey])
+const game = gameResponse.data
+const teams = game.teams
+---
+
+<Layout>
+	<p style="display: none;" id="game-key">{game.gameKey}</p>
+	<Clock gameKey={game.gameKey} />
+	<div class="w-28">
+		<h2 class="text-center">Score</h2>
+		<div class="flex justify-between">
+			<div class="text-center" id={`team-${teams[0].teamKey}`}>
+				<h3 class={teams[0].isActive ? 'text-red-600' : ''}>{teams[0].name}</h3>
+				<p id={`team-${teams[0].teamKey}`}>{teams[0].score}</p>
+			</div>
+			<div class="text-center" id={`team-${teams[1].teamKey}`}>
+				<h3 class={teams[1].isActive ? 'text-red-600' : ''}>{teams[1].name}</h3>
+				<p id={`team-${teams[1].teamKey}`}>{teams[1].score}</p>
+			</div>
+		</div>
+		<div class="hidden" id="score-buttons">
+			<button
+				class="mt-4 rounded bg-red-500 px-4 py-2 text-white hover:bg-red-600"
+				id="qwaffle">Qwaffle</button
+			>
+			<button
+				class="mt-4 rounded bg-gray-500 px-4 py-2 text-white hover:bg-gray-600"
+				id="bludger">Bludger</button
+			>
+			<button
+				class="mt-4 rounded bg-amber-500 px-4 py-2 text-white hover:bg-amber-600"
+				id="snitch">Snitch</button
+			>
+		</div>
+		<div id="timer-buttons">
+			<button
+				id="toggle-timer"
+				class="mt-4 rounded bg-black px-4 py-2 text-white hover:bg-gray-900"
+				>Start Timer</button
+			>
+			<button
+				id="change-team"
+				class="mt-4 hidden rounded bg-black px-4 py-2 text-white hover:bg-gray-900"
+				>Change Team</button
+			>
+		</div>
+	</div>
+</Layout>
+
+<script>
+	import score from '../scripts/score.js'
+	import timeScripts from '../scripts/timer.js'
+
+	var gameKey = document.getElementById('game-key').innerText
+
+	document.getElementById('qwaffle').addEventListener('click', async () => {
+		if (document.getElementById('timer').dataset.active == '0') {
+			return
+		}
+		await score.quaffle(gameKey)
+	})
+	document.getElementById('bludger').addEventListener('click', async () => {
+		if (document.getElementById('timer').dataset.active == '0') {
+			return
+		}
+		await score.bludger(gameKey)
+	})
+	document.getElementById('snitch').addEventListener('click', async () => {
+		if (document.getElementById('timer').dataset.active == '0') {
+			return
+		}
+		await score.snitch(gameKey)
+	})
+	document.getElementById('toggle-timer').addEventListener('click', async () => {
+		const timer = document.getElementById('timer')
+		if (timer.dataset.active == '0') {
+			timer.dataset.active = '1'
+			await timeScripts.startTimer()
+		} else {
+			timer.dataset.active = '0'
+			await timeScripts.stopTimer()
+		}
+	})
+	document.getElementById('change-team').addEventListener('click', async () => {
+		await score.changeActiveTeam(gameKey)
+		const timer = document.getElementById('timer')
+		timer.dataset.active = '0'
+		timer.dataset.seconds = '300'
+	})
+	document.getElementById('score-buttons').addEventListener('load', () => {
+		const buttons = document.getElementById('score-buttons')
+		const timer = document.getElementById('timer')
+		if (timer.dataset.active == '1') {
+			buttons.classList.remove('hidden')
+		} else {
+			buttons.classList.add('hidden')
+		}
+	})
+</script>
+<style>
+	.hidden {
+		display: none;
+	}
+</style>

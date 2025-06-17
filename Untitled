@@ -1,0 +1,1 @@
+_                            var gameResponse = post('games/teams/', [teams[0].teamKey, teams[1].teamKey])_request.js_import { get, post } from '../screpts/request.js'_    console.log(`[QuidditchTrip] ${message}`);

@@ -1,0 +1,11 @@
+---
+var gameKey = Astro.props.gameKey
+console.log('Game Key from Clock' + gameKey)
+const totalSeconds = 300
+---
+
+<h2 id="timer" data-seconds="10" data-active="0">5:00</h2>
+
+<script>
+	import timer from '../scripts/timer.js'
+</script>

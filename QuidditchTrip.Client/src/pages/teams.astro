@@ -1,83 +1,65 @@
 ---
 import Layout from '../layouts/Layout.astro'
+import { get, post } from '../scripts/request.js'
 import '../styles/global.css'
+const data = Astro.locals
 ---
 
-<div class="mx-auto mt-32">
-	<h1 class="text-center text-2xl">QuidditchTrip</h1>
-	<form id="team-form">
-		<input
-			type="text"
-			id="team-1"
-			placeholder="Enter team name"
-			class="mx-auto mt-4 block w-1/2 rounded border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none"
-		/>
-		<input
-			type="text"
-			id="team-2"
-			placeholder="Enter team name 2"
-			class="mx-auto mt-4 block w-1/2 rounded border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none"
-		/>
-		<input
-			type="submit"
-			class="mx-auto mt-4 block rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
-			value="Start Game"
-		/>
-	</form>
-</div>
-<Layout />
+<Layout>
+	<div class="mx-auto mt-32">
+		<h1 class="text-center text-2xl">QuidditchTrip</h1>
+		<form id="team-form">
+			<input
+				type="text"
+				id="team-1"
+				placeholder="Enter team name"
+				class="mx-auto mt-4 block w-1/2 rounded border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none"
+			/>
+			<input
+				type="text"
+				id="team-2"
+				placeholder="Enter team name 2"
+				class="mx-auto mt-4 block w-1/2 rounded border border-gray-300 px-4 py-2 focus:border-blue-500 focus:outline-none"
+			/>
+			<input
+				type="submit"
+				class="mx-auto mt-4 block rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+				value="Start Game"
+			/>
+		</form>
+	</div>
+	<Layout />
 
-<script>
-	var baseUrl = 'https://api-quidditchtrip.nolanmiller.me'
+	<script>
+		import { post } from '../scripts/request.js'
+		var baseUrl = 'https://api-quidditchtrip.nolanmiller.me'
 
-	document.getElementById('team-form').addEventListener('submit', async function (event) {
-		event.preventDefault()
+		document.getElementById('team-form').addEventListener('submit', async function (event) {
+			event.preventDefault()
+			const teamNames = []
+			const teams = []
 
-		const team1 = document.getElementById('team-1').value.trim()
-		const team2 = document.getElementById('team-2').value.trim()
+			// @ts-ignore
+			teamNames.push(document.getElementById('team-1').value.trim())
+			// @ts-ignore
+			teamNames.push(document.getElementById('team-2').value.trim())
 
-		if (team1 && team2) {
-			var teamOneResponse = await fetch(`${baseUrl}/teams/create/${team1}/`, {
-				method: 'POST'
-			})
-			if (teamOneResponse.ok) {
-				var data = await teamOneResponse.json()
-				localStorage.setItem('team1', JSON.stringify(data.data))
-				// window.location.href = `/game/${data.gameId}`
-			} else {
-				alert('Error starting game. Please try again.')
+			for (let i = 0; i < teamNames.length; i++) {
+				const response = await post('/teams/create', [teamNames[i]])
+				localStorage.setItem(`team${i + 1}key`, response.data.teamKey)
+				teams.push(response.data)
+			}
+			if (teams.length != 2) {
+				return alert('Unable to create teams. Please try again.')
 			}
 
-			var teamTwoResponse = await fetch(`${baseUrl}/teams/create/${team2}/`, {
-				method: 'POST'
-			})
-			if (teamOneResponse.ok) {
-				var data = await teamTwoResponse.json()
-				localStorage.setItem('team2', JSON.stringify(data.data))
-				// window.location.href = `/game/${data.gameId}`
-			} else {
-				alert('Error starting game. Please try again.')
+			var gameResponse = await post('/games/teams', [teams[0].teamKey, teams[1].teamKey])
+			if (!gameResponse.wasSuccessful) {
+				return alert('Failed to create game. Please try again.')
 			}
-		} else {
-			alert('Please enter valid team names.')
-		}
 
-		var savedTeam1 = JSON.parse(localStorage.getItem('team1'))
-		var savedTeam2 = JSON.parse(localStorage.getItem('team2'))
-		if (savedTeam1 && savedTeam2) {
-			var gameResponse = await fetch(
-				`${baseUrl}/games/teams/${savedTeam1.teamKey}/${savedTeam2.teamKey}/`,
-				{
-					method: 'POST'
-				}
-			)
-			if (gameResponse.ok) {
-				var gameData = await gameResponse.json()
-				localStorage.setItem('game', JSON.stringify(gameData.data))
-				window.location.href = `/game/${gameData.data.gameKey}`
-			} else {
-				alert('Error creating game. Please try again.')
-			}
-		}
-	})
-</script>
+			localStorage.setItem('gameKey', gameResponse.data.gameKey)
+			window.location.href = `/game?gameKey=${gameResponse.data.gameKey}`
+		})
+	</script>
+</Layout>

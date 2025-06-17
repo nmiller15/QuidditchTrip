@@ -1,0 +1,18 @@
+---
+import { get, post } from '../scripts/request.js'
+import Clock from '../components/Clock.astro'
+import '../styles/global.css'
+import Layout from '../layouts/Layout.astro'
+const gameKey = Astro.url.searchParams.get('gameKey')
+
+const gameResponse = await get('/games', [gameKey])
+const game = gameResponse.data
+const teams = game.teams.sort((a, b) => b.score - a.score);
+---
+<Layout>
+    <h1>The Snitch is Caught!</h1>
+    <h2>{teams[0].name} wins {teams[0].score} to {teams[1].score}!</h2>
+<p>Nice try {teams[1].name}, but {teams[0].name} was just too good!</p>
+    <p>Thanks for playing QuidditchTrip!</p>
+    <a href="/" class="mt-4 rounded bg-black px-4 py-2 text-white hover:bg-gray-900">Go Home</a>
+</Layout>
