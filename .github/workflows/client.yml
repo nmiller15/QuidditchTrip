@@ -55,6 +55,6 @@ jobs:
         run: |
           rsync -avz -o  QuidditchTrip.Client/ ubuntu@${{ secrets.EC2_PUBLIC_IP }}:/srv/QuidditchTrip.Client
 
-      - name: Restart Caddy
+      - name: Restart Services
         run: |
-          ssh ubuntu@${{ secrets.EC2_PUBLIC_IP }} "sudo systemctl restart caddy"
+          ssh ubuntu@${{ secrets.EC2_PUBLIC_IP }} "sudo systemctl restart QuidditchTrip.Client && sudo systemctl restart caddy"
