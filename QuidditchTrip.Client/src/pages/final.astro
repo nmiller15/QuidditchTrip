@@ -7,12 +7,20 @@ const gameKey = Astro.url.searchParams.get('gameKey')
 
 const gameResponse = await get('/games', [gameKey])
 const game = gameResponse.data
-const teams = game.teams.sort((a, b) => b.score - a.score);
+const teams = game.teams.sort((a, b) => b.score - a.score)
 ---
+
 <Layout>
-    <h1>The Snitch is Caught!</h1>
-    <h2>{teams[0].name} wins {teams[0].score} to {teams[1].score}!</h2>
-<p>Nice try {teams[1].name}, but {teams[0].name} was just too good!</p>
-    <p>Thanks for playing QuidditchTrip!</p>
-    <a href="/" class="mt-4 rounded bg-black px-4 py-2 text-white hover:bg-gray-900">Go Home</a>
+	<h1 class="my-10 text-center text-3xl font-black">The Snitch is Caught!</h1>
+	<h2 class="mb-5 text-center text-xl font-bold">{teams[0].name} wins!</h2>
+	<p class="mb-5 text-center text-lg font-bold">{teams[0].score} - {teams[1].score}</p>
+	<p class="mb-2 text-center text-sm font-semibold">
+		Nice try {teams[1].name}, but {teams[0].name} was just too good!
+	</p>
+	<p class="mb-10 text-center text-sm font-semibold">Thanks for playing QuidditchTrip!</p>
+	<div class="mx-auto flex justify-center">
+		<a href="/" class="mx-auto mt-4 rounded bg-black px-4 py-2 text-white hover:bg-gray-900"
+			>Go Home</a
+		>
+	</div>
 </Layout>
